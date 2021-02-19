@@ -30,7 +30,7 @@ Steps to proceed:
 ```{r, setup, include=FALSE}
 # Load packages here 
 library(mdsr)   
-
+library(tidyverse)
 knitr::opts_chunk$set(
   tidy=FALSE,     # display code as typed
   size="small",   # slightly smaller font for code
@@ -74,7 +74,12 @@ print(g)
 Lastly, Section 3.1.2 discusses *scale*, and demonstrates how to display GDP on a logarithmic scale to better discern differences in GDP.  Update the figure so GDP is on a log10 scale.  
 
 ```{r}
-
+g <- g + scale_y_continuous(
+    name = "Gross Domestic Product", 
+    trans = "log10",
+    labels = scales::comma
+  )
+print(g)
 ```
 
 
@@ -84,7 +89,7 @@ Lastly, Section 3.1.2 discusses *scale*, and demonstrates how to display GDP on 
 ### a.
 Consider Figure 3.7 in Section 3.2.1.  What does `reorder(drg, mean_charge)` do?  Recreate the plot, but use `x = drg` instead of `x = reorder(drg, mean_charge)`.  What happens?
 
-> ANSWER: 
+> ANSWER: 'reorder(drg, mean_charge)' sorts the drgs along the x axis by the mean_charge of the procedure. As such, the procedures are sorted from smallest to highest based on how expensive they are rather than by their numerical identification number. If we use `x = drg` instead of `x = reorder(drg, mean_charge)`, then the medical procedures are ordered by their drg number rather than by the average charge. Thus, they are no longer presented from lowest to highest in terms of average medical charge.
 
 ```{r}
 data(MedicareCharges)
@@ -93,7 +98,15 @@ ChargesNJ <- MedicareCharges %>%
   filter(stateProvider == "NJ")
 
 # create the plot object
-p <- 
+p <- ggplot(
+  data = ChargesNJ, 
+  aes(x = drg, y = mean_charge)
+) +
+  geom_col(fill = "gray") +
+  ylab("Statewide Average Charges ($)") + 
+  xlab("Medical Procedure (DRG)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = rel(0.5)))
+
   
   
 # print the plot
@@ -103,10 +116,24 @@ p
 ### b.
 Replace `x = drg` with `x = reorder(drg, mean_charge)`, but also remove the `theme()` line.  Now what happens?  What was the purpose of the `theme()` line?  Hint: You may need to knit the document and look at the pdf to better observe what's happening.
 
-> ANSWER:  
+> ANSWER: If we remove the `theme()` line, the labels on the x axis are all bunched together. This is because the labels are now all horizontally oriented rather than vertically oriented. As such, the theme line first oriented the labe 90 degrees, due to `angle=90` and reduced the size of the lable with the instruction `size = rel(0.5)`.
 
 ```{r}
+data(MedicareCharges)
+ChargesNJ <- MedicareCharges %>% 
+  ungroup() %>%
+  filter(stateProvider == "NJ")
 
+# create the plot object
+q <- ggplot(
+  data = ChargesNJ, 
+  aes(x = reorder(drg, mean_charge), y = mean_charge)
+) +
+  geom_col(fill = "gray") +
+  ylab("Statewide Average Charges ($)") + 
+  xlab("Medical Procedure (DRG)") 
+
+q
 ```
 
 
@@ -115,7 +142,7 @@ Replace `x = drg` with `x = reorder(drg, mean_charge)`, but also remove the `the
 
 As you read through (and, better yet -- code along with (not required, but useful practice!)) -- the extended example on historical baby names in section 3.3.1, write down two questions you have about any of the R code used in that example.  (Your questions could be about what a specific part of the code -- ggplot or not -- is actually doing, or a more general question about any of the commands used.)  Please be thoughtful about your questions; we will use them (anonymously) in an exercise in class this week.
 
-> ANSWER: 
+> ANSWER: My first question is about the section of code where the median year of birth is calculated using wtd.quartile. I'm not sure how that section of the code works, especially how the pipe symbols relate to `year = wtd_quantile(year, est_alive_today, probs = 0.5)`. My second question is about the "tribble" and what was the point of the numbers in the tribble. For example, there is ~year, ~num_people but where do we use these variables?
 
 ```{r}
 # to get you started following along . . .
@@ -127,11 +154,59 @@ joseph <- BabynamesDist %>%
 
 name_plot <- ggplot(data = joseph, aes(x = year)) +
   geom_bar(stat = "identity", aes(y = count_thousands*alive_prob)
-           , fill = "#b2d7e9", color = "white")
+           , fill = "#b2d7e9", color = "white", size = 0.1)
+
+name_plot <- name_plot + 
+  geom_line(aes(y = count_thousands), size = 2)
+name_plot <- name_plot +
+  ylab("Number of People (thousands)") + 
+  xlab(NULL)
 
 name_plot
 ```
 
+```{r}
+install.packages('acepack')
+library(acepack)
+wtd_quantile <- Hmisc::wtd.quantile
+median_yob <- joseph %>%
+  summarize(
+    year = wtd_quantile(year, est_alive_today, probs = 0.5)
+  ) %>% 
+  pull(year)
+median_yob
 
+```
+```{r}
+name_plot <- name_plot +
+  geom_col(
+    color = "white", fill = "#008fd5", 
+    aes(y = ifelse(year == median_yob, est_alive_today / 1000, 0))
+  )
+name_plot
+```
+```{r}
+context <- tribble(
+  ~year, ~num_people, ~label,
+  1935, 40, "Number of Josephs\nborn each year",
+  1915, 13, "Number of Josephs\nborn each year
+  \nestimated to be alive\non 1/1/2014", 
+  2003, 40, "The median\nliving Joseph\nis 37 years old", 
+)
 
-
+name_plot +
+  ggtitle("Age Distribution of American Boys Named Joseph") + 
+  geom_text(
+    data = context, 
+    aes(y = num_people, label = label, color = label)
+  ) + 
+  geom_curve(
+    x = 1990, xend = 1974, y = 40, yend = 24, 
+    arrow = arrow(length = unit(0.3, "cm")), curvature = 0.5
+  ) + 
+  scale_color_manual(
+    guide = FALSE, 
+    values = c("black", "#b2d7e9", "darkgray")
+  ) + 
+  ylim(0, 42)
+```
