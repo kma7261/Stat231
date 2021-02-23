@@ -127,7 +127,7 @@ g <- g + geom_smooth() + aes(lty = country) +
     )
 g
 ```
-
+Question: Why the gray shadows???
 *This is a good place to pause, commit changes with the commit message "Added answer for Ex 2", and push.*
 
 ### Exercise 3. Colors
