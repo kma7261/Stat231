@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 
 # If you discussed this assignment with any of your peers, please list who here:
 
-> ANSWER:
+> ANSWER: Office Hours On Friday
 
 
 
@@ -51,7 +51,7 @@ a. What story does the data graphic tell?  What is the main message that you tak
 
 b. Can the data graphic be described in terms of the taxonomy presented in this chapter?  If so, list the visual cues, coordinate system, and scale(s).  If not, describe the feature of this data graphic that lies outside of that taxonomy.
 
-> ANSWER: While there is no identifiable coordinate system or scale, there are various visuals cues utilized by the graphic. The graphic first uses length to demonstrate how many students belong to each group of majors. The graphic also uses color to identify the different major groups. In addition, to demonstrate the "flow" of students to their respective career choice, the graphic uses area and shade the highlight how many students of a particular group of majors goes to a certain industry. A feature that lies outside of the taxonomy is that double-majors have their lines split in two, which does not really fall in any one item (possible area?)
+> ANSWER: While there is no identifiable coordinate system or scale, there are various visuals cues utilized by the graphic. The graphic first uses length to demonstrate how many students belong to each group of majors. The graphic also uses color to identify the different major groups. In addition, to demonstrate the "flow" of students to their respective career choice, the graphic uses area and shade the highlight how many students of a particular group of majors goes to a certain industry. Area would encompass the different thickness of each line. A feature that lies outside of the taxonomy is that double-majors have their lines split in two, which does not really fall in any one item (possible area?)
 
 c. Critique and/or praise the visualization choices made by the designer.  Do they work? Are they misleading?  Thought-provoking?  Brilliant?  Are there things that you would have done differently?  Justify your response.
 
@@ -63,7 +63,7 @@ c. Critique and/or praise the visualization choices made by the designer.  Do th
 
 Explain why the following command does not color the data points blue, then write down the command that will turn the points blue.
 
-> ANSWER: The command does not turn the data points blue the code "color = "blue"" is within the aes function. As such, it is treated as and aesthetic, which means "blue" is treated as a variable rather than as an instruction. Because there is no variable "blue", all of the points are the default color. The command that will turn the points blue is:
+> ANSWER: The command does not turn the data points blue the code "color = "blue"" is within the aes function. As such, it is treated as an aesthetic, which means "blue" is treated as a variable rather than as an instruction. Because there is no variable "blue", all of the points are the default color. The command that will turn the points blue is:
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 
@@ -79,7 +79,7 @@ ggplot(data = mpg) +
 
 Use the `MLB_teams` data in the `mdsr` package to create an informative data graphic that illustrates the relationship between winning percentage and payroll in context. What story does your graph tell?
 
-> ANSWER: My graph shows that from 2008 to 2014 that there was a positive correlation between a MLB team's payroll and their winning percentage during the season. 
+> ANSWER: My graph shows that from 2008 to 2014 that there was a positive correlation between a MLB team's payroll and their winning percentage during the season. What I plotted is the relationship between the dependent variable Winning Percentage and the independent variable Team Payroll. 
 
 ```{r}
 library(ggplot2)
@@ -87,6 +87,7 @@ ggplot(data = MLB_teams, mapping = aes(x = payroll, y = WPct)) +
   geom_point()+
   geom_smooth(method = "loess", se = FALSE) +
   labs(
+    title = "Relationship Between MLB Winning Percentage And Payroll",
     y = "Winning Percentage",
     x = "Payroll"
   )
