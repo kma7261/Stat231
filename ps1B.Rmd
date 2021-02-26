@@ -63,7 +63,7 @@ c. Critique and/or praise the visualization choices made by the designer.  Do th
 
 Explain why the following command does not color the data points blue, then write down the command that will turn the points blue.
 
-> ANSWER: The command does not turn the data points blue the code "color = "blue"" is within the aes function. As such, it is treated as an aesthetic, which means "blue" is treated as a variable rather than as an instruction. Because there is no variable "blue", all of the points are the default color. The command that will turn the points blue is:
+> ANSWER: The command does not turn the data points blue the code "color = "blue"" is within the aes function which is part of mapping. As such, it is treated as an aesthetic, which means "blue" is treated as a variable rather than as an instruction. Because there is no variable "blue", all of the points are the default color. The command that will turn the points blue is:
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 
