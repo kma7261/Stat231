@@ -61,6 +61,7 @@ First, let's read in the files containing the healthcare coverage and healthcare
 *Getting an error trying to read in the data?  Watch the video "Lab03-filepaths" (posted on Moodle) for help troubleshooting.*
 
 ```{r}
+#Load CSV files
 coverage <- read_csv("/Users/kevinma/Github/Stat231/healthcare_coverage.txt")
 spending <- read_csv("/Users/kevinma/Github/Stat231/healthcare_spending.txt")
 ```
@@ -87,11 +88,13 @@ If we're interested in the relationship between spending and coverage, we'll onl
 > RESPONSE: The spending dataset covers years from 1991 to 2014. The coverage dataset covers years from 2013 to 2016.
 
 ```{r}
+#Look at spending and coverage
 glimpse(spending)
 glimpse(coverage)
 
 ```
 ```{r}
+#Narrow down to columns that we want, which are years
 spending <- spending[, -c(2:23)]
 coverage <- coverage[,-c(15:29)]
 glimpse(coverage)
@@ -100,6 +103,7 @@ glimpse(coverage)
 Note that there are observations both for the US as a whole and DC.  Remove these observations from both datasets.
 
 ```{r}
+#Filter and remove observations
 spending <- spending %>%
   filter(Location != "United States") %>%
   filter(Location != "District of Columbia")
@@ -133,6 +137,7 @@ Now implement those steps in R, tidying the dataset for plotting.  After the fin
 
 
 ```{r}
+#Join and gather data
 total <- coverage %>%
   inner_join(spending, by = "Location") %>%
   gather(key = "coverage_type", value = "value", -Location) %>%
