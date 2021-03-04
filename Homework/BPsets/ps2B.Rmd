@@ -1,6 +1,6 @@
 ---
 title: 'STAT 231: Problem Set 2B'
-author: "YOUR NAME HERE"
+author: "Kevin Ma"
 date: "due by 5 PM on Friday, March 5"
 output:
   pdf_document: default
@@ -40,7 +40,7 @@ knitr::opts_chunk$set(
 
 # If you discussed this assignment with any of your peers, please list who here:
 
-> ANSWER: Office Hours
+> ANSWER: TA Hours with Andrea
 
 \newpage
 # MDSR Exercise 4.14 (modified)
@@ -79,10 +79,24 @@ max(subset(ryan_pitching,select=SO))
 
 a. The Violations data set in the `mdsr` package contains information regarding the outcome of health inspections in New York City.  Use these data to calculate the median violation score by zipcode and dba for zipcodes in Manhattan.  What pattern (if any) do you see between the number of inspections and the median score?  Generate a visualization to support your response.  
 
-> ANSWER:  
+> ANSWER: It appears there is a slight positive relationship between the number of inspections and the median violation score. As a business has a larger number of inspections, it is expected of the median violation score to be higher. 
 
 ```{r}
-View(Violations)
+Violate_proc <- Violations %>%
+  filter(boro == "MANHATTAN") %>%
+  group_by(dba, zipcode) %>%
+  summarise(med_score = median(score), num_inspect = n()) %>%
+  drop_na()
+
+g <- ggplot(data = Violate_proc, mapping = aes(x = num_inspect, y = med_score)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Relationship Between Number of Inspections and Median Score",
+    y = "Median Violation Score",
+    x = "Number of Inspections"
+  )
+g
 ```
 
 b.  In your visualization in part (a), there should be at least a few points that stand out as outliers.  For *one of the outliers*, add text to the outlier identifying what business it is and an arrow pointing from the text to the observation.  First, you may want to `filter` to identify the name of the business (so you know what text to add to the plot).  
@@ -90,10 +104,25 @@ b.  In your visualization in part (a), there should be at least a few points tha
 (Can't remember how to create a curved arrow in `ggplot`?  The answers to [this question](https://stackoverflow.com/questions/38008863/how-to-draw-a-nice-arrow-in-ggplot2/61383034) on Stack Exchange may help.  Can't remember how to add text to the plot in `ggplot`?  Check out the text examples with `annotate` [here](https://ggplot2.tidyverse.org/reference/annotate.html), or answers to [this question](https://stackoverflow.com/questions/14351608/color-one-point-and-add-an-annotation-in-ggplot2/14351810) that use `geom_text`.)
 
 ```{r}
-
+outlier <- Violate_proc %>%
+  filter(med_score > 60 & num_inspect > 30)
+outlier
 
 ```
-
+```{r}
+g_arrow <- g + geom_curve(
+  aes(x = 50, y = 70, xend = 32, yend = 65),
+  arrow = arrow(
+    length = unit(0.03, "npc"), 
+                type="closed" # Describes arrow head (open or closed)
+    ),
+  colour = "#EC7014",
+  size = 1.2,
+  angle = 90
+)
+g_arrowtext <- g_arrow + annotate("text", x = 55, y = 67, label = "Kyle Restaurant")
+g_arrowtext
+```
 
 \newpage
 # MDSR Exercise 5.7
