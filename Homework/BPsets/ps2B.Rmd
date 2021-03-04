@@ -25,11 +25,14 @@ Steps to proceed:
 \end{enumerate}
 
 ```{r, setup, include=FALSE}
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
 library(mdsr)   
 library(tidyverse)
 install.packages("Lahman")
 library(Lahman)
-
+options(repos="https://cran.rstudio.com" )
 knitr::opts_chunk$set(
   tidy=FALSE,     # display code as typed
   size="small")   # slightly smaller font for code
@@ -143,7 +146,8 @@ FakeDataLong %>%
   gather(key=stats,value=value,-c(grp,sex)) %>%
   unite(stats,sex:stats,sep=".") %>%
   arrange(stats) %>%
-  spread(key=stats,value=value)
+  spread(key=stats,value=value) %>%
+  head(2)
 ```
 
 \newpage
