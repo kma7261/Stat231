@@ -166,8 +166,7 @@ name_plot
 ```
 
 ```{r}
-install.packages('acepack')
-library(acepack)
+
 wtd_quantile <- Hmisc::wtd.quantile
 median_yob <- joseph %>%
   summarize(

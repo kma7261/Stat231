@@ -101,7 +101,7 @@ Using data from the `nasaweather` package, use the `geom_path()` function to plo
 
 Note: be sure you load the `nasaweather` package and use the `storms` dataset from that package!
 ```{r}
-install.packages("nasaweather")
+install.packages("nasaweather", repos="http://cran.us.r-project.org")
 library(nasaweather)
 ```
 

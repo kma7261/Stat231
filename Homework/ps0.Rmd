@@ -3,9 +3,9 @@ title: 'STAT 231: Problem Set 0'
 author: "Kevin Ma"
 date: "due by 5 PM on Friday, February 19"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 This problem set is a modified version of a lab developed by Mine Cetinkaya-Rundel.
@@ -65,7 +65,7 @@ To find out more about the dataset, type the following in your Console: `?datasa
 
 Based on the help file, how many rows and how many columns does the `datasaurus_dozen` file have? What are the variables included in the data frame? After you've added your response below, commit your changes with the commit message "Added answer for Ex 1", and push.
 
-> RESPONSE: 1846 rows and 3 columns. The variables are dataset: indicates which dataset the data are from, x: x-values, and y:y-values
+> RESPONSE: 1846 rows and 3 columns. The variables are dataset: indicates which dataset the data are from, x: x-values, and y: y-values.
 
 Let's take a look at what these datasets are. To do so we can make a *frequency table* of the dataset variable:
 
@@ -101,7 +101,7 @@ If this seems like a lot, don't worry.  You will learn about the philosophy of b
 
 What do you notice now about the relationship between x and y?
 
-> RESPONSE: First, the x and y coordinates make up dots that form the shape of a dinosaur. Overall it seems that as x increases y increases or decreases.
+> RESPONSE: First, the x and y coordinates make up dots that form the shape of a dinosaur.
 
 ```{r fig.fullwidth=TRUE}
 ggplot(data = dino_data, mapping = aes(x = x, y = y)) +
