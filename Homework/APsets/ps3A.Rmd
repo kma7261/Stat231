@@ -73,7 +73,7 @@ The full code and slides from the video are also available here: https://github.
 ### a. 
 As you watch, or after watching, the tutorial, write down at least two questions you have about Shiny applications.
 
-> ANSWER:
+> ANSWER: I am still not sure what the histogram does...what exactly is it plotting? Is starting the slider at 25 the default value? Why would the histogram change when we change the title...what if we only wanted to change the title?
 
 ### b.
 After watching the tutorial, create a new folder called "ps3a_shiny" within your "homeworks" folder in your GitHub repository.  Open a new R file (**not** R Markdown) by going to File > New File > R Script.  (In a .R file, you can only write R code.  Any comments need to have a hashtag (#) in front of them.)  Save the file as `app.R` within the "ps3a_shiny" folder.  Then,
@@ -108,14 +108,18 @@ shinyApp(ui = ui, server = server)
 library(shiny)
 
 ui <- fluidPage(
+  #slider interactive input
   sliderInput(inputId = "num", 
     label = "Choose a number", 
     value = 25, min = 1, max = 100),
+  #provides space to build the plot
   plotOutput("hist")
 )
 
 server <- function(input, output) {
+  #Save objects to display to output$
   output$hist <- renderPlot({
+    #Use the render function that creates the type of output you wish to make
     hist(rnorm(input$num))
   })
 }

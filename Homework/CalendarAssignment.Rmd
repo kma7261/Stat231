@@ -1,0 +1,28 @@
+---
+title: "CalendarAssignment"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+#install.packages("ical")
+library(tidyverse)
+library(lubridate)
+library(ical)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+path <- "/Users/kevinma/Github/Stat231/Homework"
+filename <- "kma8222178@gmail.com.ics"
+
+my_calendar0 <- ical_parse_df(file = paste0(path,"/",filename)) %>%
+  mutate(start_datetime = with_tz(start, tzone = "America/New_York")
+    , end_datetime = with_tz(end, tzone = "America/New_York")
+    , length_hour = end_datetime - start_datetime
+    , date = floor_date(start_datetime, unit = "day"))
+```
+
+```{r}
+names(my_calendar0)
+head(my_calendar0)
+```

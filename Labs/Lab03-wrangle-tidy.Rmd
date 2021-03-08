@@ -28,8 +28,9 @@ We start by loading the packages.
 ```{r}
 library(tidyverse)
 library(datasets) 
-install.packages("janitor")
+#install.packages("janitor")
 library(janitor)
+library(dplyr)
 ```
 
 
@@ -138,11 +139,33 @@ Now implement those steps in R, tidying the dataset for plotting.  After the fin
 
 ```{r}
 #Join and gather data
-total <- coverage %>%
-  inner_join(spending, by = "Location") %>%
-  gather(key = "coverage_type", value = "value", -Location) %>%
-  mutate(year = )
-  
+coverage <- coverage %>%
+  select(`2013__Employer`,`2014__Employer`,Location)
+coverage_2013 <- coverage %>%
+  select(`2013__Employer`,Location) %>%
+  rename(coverage = "2013__Employer")
+coverage_2014 <- coverage %>%
+  select(`2014__Employer`,Location) %>%
+  rename(coverage = "2014__Employer")
+spending_2013 <- spending %>%
+  select(`2013__Total Health Spending`,Location) %>%
+  rename(spending = "2013__Total Health Spending") 
+spending_2014 <- spending %>%
+  select(`2014__Total Health Spending`,Location) %>%
+  rename(spending = "2014__Total Health Spending")
+
+#Bind coverage and spending datasets by year
+dataframe_2013 <- coverage_2013 %>% 
+  inner_join(spending_2013, by = "Location") %>% 
+  mutate(year = "2013")
+dataframe_2014 <- coverage_2014 %>% 
+  inner_join(spending_2014, by = "Location") %>% 
+  mutate(year = "2014")
+
+#stack on top of each other
+final_df <- rbind.data.frame(dataframe_2013, dataframe_2014)
+
+ggplot(data = final_df, mapping = aes(x = spending))
 ```
 
 We see there is a strong relationship between log(spending) and log(coverage) within each year. However, you might suspect that health care coverage and spending is also strongly related to population size.  In the `coverage` dataset, the total type is not really a formal type of health care coverage. It really represents just the total number of people in the state. This is useful information.  Next:

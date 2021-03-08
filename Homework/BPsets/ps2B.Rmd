@@ -43,7 +43,7 @@ knitr::opts_chunk$set(
 
 # If you discussed this assignment with any of your peers, please list who here:
 
-> ANSWER: TA Hours with Andrea
+> ANSWER: TA Hours with Andrea and office hours
 
 \newpage
 # MDSR Exercise 4.14 (modified)
@@ -60,7 +60,7 @@ great_pitchers <- Pitching %>%
   group_by(playerID) %>%
   summarize(W = sum(W), SO = sum(SO)) %>%
   filter(W >= 300 & SO >= 3000)
-great_pitchers
+nrow(great_pitchers)
 ```
 
 b. Which of these pitchers had the most accumulated strikeouts?  How many strikeouts had he accumulated?  What is the most strikeouts he had in one season?
@@ -70,6 +70,8 @@ b. Which of these pitchers had the most accumulated strikeouts?  How many strike
 ```{r}
 great_pitchers <- arrange(great_pitchers,desc(SO))
 great_pitchers
+great_pitchers[1,"playerID"]
+great_pitchers[1,"SO"]
 ```
 ```{r}
 ryan_pitching <- Pitching %>%
