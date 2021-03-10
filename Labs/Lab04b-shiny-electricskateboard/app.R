@@ -3,8 +3,10 @@ library(shinythemes)
 library(tidyverse)
 library(DT)
 library(ggrepel)
-#library(fivethirtyeight)
-
+library(fivethirtyeight)
+#ibrary(fivethirtyeight)
+#candy <- fivethirtyeight::candy_rankings
+#ncaa_w_bball_tourney
 ###############
 # import data #
 ###############
