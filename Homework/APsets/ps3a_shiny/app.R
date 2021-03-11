@@ -13,6 +13,7 @@ ui <- fluidPage(
   textInput(inputId = "title", 
             label = "Write a title",
             value = "Histogram of Random Normal Values"),
+  #Adding the panels and actions buttons
   navlistPanel(              
     tabPanel(title = "Normal data",
              plotOutput("norm"),
@@ -31,6 +32,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+  #defining reactive values
   rv <- reactiveValues(
     norm = rnorm(25), 
     unif = runif(25),
@@ -38,8 +40,9 @@ server <- function(input, output) {
   
   observeEvent(input$renorm, { rv$norm <- rnorm(input$num) })
   observeEvent(input$reunif, { rv$unif <- runif(input$num) })
+  #chisq needs degrees of freedom
   observeEvent(input$rechisq, { rv$chisq <- rchisq(input$num, 2) })
-  
+  #output plots
   output$norm <- renderPlot({
     hist(rv$norm, main = input$title)
   })
