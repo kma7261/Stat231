@@ -29,11 +29,11 @@ scatter_choice_values <- c("sugarpercent", "pricepercent", "winpercent")
 scatter_choice_names <- c("Sugar%", "Price%", "Win%")
 names(scatter_choice_values) <- scatter_choice_names
 
-# for selectizeInput choices for skateboard name, pull directly from data
+# for selectizeInput choices for competitor name name, pull directly from data
 name_choices <- unique(candy$competitorname)
 
 # for TAB 3 (TABLE) widgets: 
-# for selectizeInput choices for company name, pull directly from data
+# for selectizeInput choices for competitor name, pull directly from data
 brand_choices <- unique(candy$competitorname)
 
 ############
@@ -42,7 +42,7 @@ brand_choices <- unique(candy$competitorname)
 ui <- navbarPage(
   
   title="Different Candy",
-  
+  #This is for the bar graph, we can change the variable on x-axis
   tabPanel(
     title = "Bar Chart",
     sidebarLayout(
@@ -57,7 +57,7 @@ ui <- navbarPage(
       )
     )
   ),
-  
+  #This chunk is for the scatter plot
    tabPanel(
     title = "Scatterplot",
     
@@ -79,7 +79,7 @@ ui <- navbarPage(
        )
      )
    ),
-  
+  #This chunk is for the table
   tabPanel(
     title = "Table",
     
@@ -103,7 +103,7 @@ ui <- navbarPage(
 ############
 server <- function(input,output){
   
-  # TAB 1: HISTOGRAM
+  # TAB 1: Bar chart
   data_for_bar <- reactive({
     data <- candy
   })
@@ -115,7 +115,7 @@ server <- function(input,output){
            , y = "Number of Candies")
   })
   
-  # TAB 2: INTERACTIVE SCATTERPLOT 
+  # TAB 2: SCATTERPLOT 
    output$scatter <- renderPlot({
      candy %>%
      ggplot(aes_string(x=input$x_axis, y="winpercent")) +
