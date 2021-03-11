@@ -1,0 +1,12 @@
+name: candy
+title: candy
+username:
+account: kma7261
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3774544
+bundleId: 4331516
+url: https://kma7261.shinyapps.io/candy/
+when: 1615477550.56323
+asMultiple: FALSE
+asStatic: FALSE
