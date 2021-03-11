@@ -19,7 +19,7 @@ candy <- fivethirtyeight::candy_rankings
 # for TAB 1 (HISTOGRAM) widgets: 
 # for selectInput, 'choices' object should be a NAMED LIST
 bar_choice_values <- c("chocolate","fruity","caramel","peanutyalmondy","nougat", "crispedricewafer","hard","bar","pluribus")
-bar_choice_names <- c("Chocolate","Fruit","TCaramel","Peanut/Almond", "Nougat", "Cripsed/Rice Wafer","Hard","Bar","Pluribus")
+bar_choice_names <- c("Chocolate","Fruit","Caramel","Peanut/Almond", "Nougat", "Cripsed/Rice Wafer","Hard","Bar","Pluribus")
 names(bar_choice_values) <- bar_choice_names
 
 
