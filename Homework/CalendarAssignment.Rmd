@@ -25,4 +25,6 @@ my_calendar0 <- ical_parse_df(file = paste0(path,"/",filename)) %>%
 ```{r}
 names(my_calendar0)
 head(my_calendar0)
+my_calendar <- my_calendar0 %>%
+  filter(date > "2021-02-24")
 ```
