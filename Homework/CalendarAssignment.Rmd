@@ -1,6 +1,12 @@
 ---
-title: "CalendarAssignment"
-output: html_document
+title: "Kevin Ma Calendar Schedule"
+subtitle: "STAT231: Google Calendar Analysis"
+author: "Kevin Ma"
+date: "Due 3/19/21" 
+output: 
+  pdf_document:
+    toc: true
+    number_sections: true
 ---
 
 ```{r setup, include=FALSE}
@@ -8,10 +14,16 @@ output: html_document
 library(tidyverse)
 library(lubridate)
 library(ical)
+knitr::opts_chunk$set(
+  tidy=FALSE,
+  size="small")
 knitr::opts_chunk$set(echo = TRUE)
 ```
+\newpage
 
+## Importing Calendar
 ```{r}
+#importing calendar
 path <- "/Users/kevinma/Github/Stat231/Homework"
 filename <- "kma8222178@gmail.com.ics"
 
@@ -21,10 +33,34 @@ my_calendar0 <- ical_parse_df(file = paste0(path,"/",filename)) %>%
     , length_hour = end_datetime - start_datetime
     , date = floor_date(start_datetime, unit = "day"))
 ```
+```{r}
+#Data wrangling, 
+my_calendar1 <- my_calendar0 %>%
+  filter(date > "2021-02-24") %>%
+  mutate(
+    day = weekdays(date),
+    sub_group = case_when(summary == "Computer Science" |
+                            summary == "Thesis" |
+                            summary == "Data Science" ~ "Classes",
+                          summary == "Tennis" | 
+                            summary == "Workout" ~ "Exercise",
+                          summary == "Breakfast" |
+                            summary == "Lunch" |
+                            summary == "Dinner" ~ "Meals") 
+    #if summary is "breakfast, lunch, or dinner", subroup = "meals"
+  )
+
+```
+The questions I wanted to answer in this assignment are the following:
+
+1. What is the breakdown of time I spend between eating, schoolwork, and exercise?
+
+2. Where do I spend the most amount of time on campus?
+
+3. With regards to schoolwork, what class do I spend most of my time on?
 
 ```{r}
-names(my_calendar0)
-head(my_calendar0)
-my_calendar <- my_calendar0 %>%
-  filter(date > "2021-02-24")
+total_time <- my_calendar %>%
+  group_by(summary) %>%
+  summarise(tot_time = sum(length_hour))
 ```
