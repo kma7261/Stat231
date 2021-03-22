@@ -1,6 +1,6 @@
 ---
 title: "STAT 231: Problem Set 5A"
-author: "YOUR NAME HERE"
+author: "Kevin Ma"
 date: "due by 10 PM on Monday, March 22"
 output: pdf_document
 ---
@@ -53,7 +53,7 @@ In Section 19.1.1, the `str_subset`, `str_detect`, and `str_which` functions are
 
 (Yes, the textbook explains the differences in these commands/calls to these commands, but it can be helpful if you run the lines yourself as well to be sure they work as you'd expect and to inspect the results.) 
 
-> ANSWER: The `str_subset()` function uses a needle in a haystack paradigm. In this case, it returns all of the lines that start with " MACBETH" which are Macbeth's speaking lines. The `str_which()` function returns the indices of where the word " MACBETH" shows up. Lastly, `str_detect` works by returning true or false for all of the indices on whether the word " MACBETH" matches. 
+> ANSWER: The `str_subset()` function uses a needle in a haystack paradigm. In this case, it returns all of the lines that start with " MACBETH" which are Macbeth's speaking lines. The `str_which()` function returns the indices within the macbeth vector of where the word " MACBETH" shows up. Lastly, `str_detect` works by returning true or false for all of the indices on whether the word " MACBETH" matches. 
 
 ```{r}
 # defining "macbeth" object
