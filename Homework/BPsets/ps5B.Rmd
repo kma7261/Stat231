@@ -79,13 +79,16 @@ b. Go to the [List of Justices of the Supreme Court of the United States](https:
 ## evaluate it (which would re-scrape the website every time you knit this file).  
 ## (We do want the grader to be able to see the code, though, as you'll only 
 ## submit this one knit PDF to Gradescope.)
+#Getting the URL
 url <- "https://en.wikipedia.org/wiki/List_of_justices_of_the_Supreme_Court_of_the_United_States"
+#Creating tables variable
 tables <- url %>%
   read_html() %>%
   html_nodes("table") %>%
   html_table(fill = TRUE)
+#Justice table is in the second table
 supreme_justices <- tables[[2]]
-
+#Write to CSV file
 write_csv(x = supreme_justices, "~/Github/Stat231/Homework/BPsets/justices.csv")
 
 ```
@@ -99,6 +102,7 @@ Create a visualization to show the distribution of tenure length of U.S. Supreme
 > ANSWER: From this density plot, I can tell that most supreme court justices have a tenure length of less than twenty years. The most common tenure length is less than ten years (around 6 or 7) with the average tenure length around 15 years. Very few justices have a tenure length of less than five years. There is a spike up then a relatively slow decline in the density as tenure length increases. 
 
 ```{r}
+#Read csv file
 justices <- read_csv("~/Github/Stat231/Homework/BPsets/justices.csv")
 
 justices2 <- justices %>%
@@ -124,10 +128,13 @@ justices2 <- justices %>%
 ```
 
 ```{r}
+#Using a density plot with average line
 p <- ggplot(justices2, aes(x = tenure_length)) +
   geom_density(color="darkblue", fill="lightblue")+
+  #Average line
   geom_vline(aes(xintercept=mean(tenure_length)),
             color="blue", linetype="dashed", size=1)+
+  #Title and Lables
   labs(title="Density Plot of Tenure Length of Justices",
         x ="Tenure Length", y = "Density")
 p
@@ -191,7 +198,25 @@ Go to BrainyQuote.com and search a different topic (or search an Author) that in
 ## evaluate it (which would re-scrape the website every time you knit this file).  
 ## (We do want the grader to be able to see the code, though, as you'll only 
 ## submit this one knit PDF to Gradescope.)
+#Same as example just changed the url
+quotes_html <- read_html("https://www.brainyquote.com/topics/funny-quotes")
 
+quotes <- quotes_html %>%
+  html_nodes(".oncl_q") %>%
+  html_text() 
+
+person <- quotes_html %>%
+  html_nodes(".oncl_a") %>%
+  html_text()
+
+# put in data frame with two variables (person and quote)
+quotes_dat <- data.frame(quote = quotes, stringsAsFactors = FALSE) %>%
+  filter(quote != "\n") %>%
+  mutate(person = person
+         , together = paste('"', as.character(quote), '" --'
+                            , as.character(person), sep=""))
+#Write to csv file
+write_csv(x = quotes_dat, "~/Github/Stat231/Homework/BPsets/quotes.csv")
 
 ```
 
@@ -200,6 +225,12 @@ Go to BrainyQuote.com and search a different topic (or search an Author) that in
 c. Load `quotes.csv` into this file using the `read_csv` function.  Write code to select *three* of the quotes at random and print them (i.e., set `size = 3` in the `sample` function).
 
 ```{r, linewidth = 60}
+#Read csv
+quotes_dat <- read_csv("~/Github/Stat231/Homework/BPsets/quotes.csv")
+#Sample size is three
+three_quotes <- quotes_dat[sample(1:nrow(quotes_dat), size = 3),]
+#Print out quotes, separate with new line
+cat(three_quotes$together, sep="\n\n")
 
 ```
 
