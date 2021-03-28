@@ -51,7 +51,7 @@ Further details can be found in the project guidelines document ("PUG_Shiny_Proj
 
 If you haven't already, please get in touch with your team members to coordinate your plan.  Briefly describe your group's plan (e.g., "I'll be working to get X done before Tuesday's class, and the others will be working on Y and Z." -- or -- "We're planning to meet on X day at Y time via Zoom to do Z together").
 
-> ANSWER:
+> ANSWER: The plan is to be able to create a script that can scrape all the data we need from those websites by Tuesday's class and spend the remainder of the week wrangling the data into formats that are needed for the visualizations. I have begun working on the script to scrape data for regular player statistics.
 
 
 
@@ -75,7 +75,7 @@ Note that the `rgdal` package is loaded in the set-up code chunk above.
 ```{r}
 # insert the path to where you want to save the data
 # a good choice would be your problem sets folder within your git repo
-my_path <- "INSERT PATH HERE"
+my_path <- "~/Github/Stat231/Homework/APsets"
 
 # downloads a zip file from the internet website
 download.file("http://rtwilson.com/downloads/SnowGIS_SHP.zip" 
