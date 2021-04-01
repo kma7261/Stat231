@@ -2,6 +2,7 @@
 title: 'STAT 231: Problem Set 6A'
 author: "YOUR NAME HERE"
 date: "due by 10 PM on Monday, March 29"
+always_allow_html: yes
 output:
   pdf_document: default
 ---
@@ -144,19 +145,19 @@ cholera_latlong <- CholeraDeaths %>%
   spTransform(CRS("+init=epsg:4326")) %>%
   as.data.frame() %>%
   mutate(type = "Cholera death")
-
-# transform pump data to same coordinate system as leaflet
+# 
+# # transform pump data to same coordinate system as leaflet
 pumps_latlong <- Pumps %>%
   spTransform(CRS("+init=epsg:4326")) %>%
   as.data.frame() %>%
   mutate(count = 1, type = "Pump")
-
+# 
 # join cholera and pumps datasets together
 both_latlong <- cholera_latlong %>%
   bind_rows(pumps_latlong)
-
+# 
 # create dynamic map
-leaflet() %>% 
+leaflet() %>%
   addTiles() %>%
   addCircleMarkers(data = both_latlong,
              lng = ~coords.x1,
