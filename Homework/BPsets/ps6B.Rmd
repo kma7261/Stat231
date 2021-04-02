@@ -1,6 +1,6 @@
 ---
 title: "STAT 231: Problem Set 6B"
-author: "YOUR NAME HERE"
+author: "Kevin Ma"
 date: "due by 10 PM on Friday, April 2"
 output:
   pdf_document: default
@@ -170,7 +170,7 @@ trump_bigrams <- tweets2 %>%
   group_by(source) %>% 
   count(bigram, sort = TRUE)
 
-# Remove stop words and unite back
+# Remove stop words and unite back, split in two
 bigrams_filtered <- trump_bigrams %>%
   separate(bigram, c("first", "second"), sep = " ") %>%
   filter(!first %in% stop_words$word) %>%
@@ -214,20 +214,21 @@ nrc1 <- get_sentiments("nrc")
 #vector of sentiments
 sentiments <- c("anger", "joy", "negative", "positive")
 
+#Get number of sentiments for Android tweets
 android_sentiments1 <- nrc1 %>%
   inner_join(android) %>%
   group_by(sentiment) %>%
   summarise(total = sum(n)) %>%
   mutate(proportion = total/sum(total),
          source = "Android")
-
+#Get number of sentiments for iPhone tweets
 iPhone_sentiments1 <- nrc1 %>%
   inner_join(iPhone) %>%
   group_by(sentiment) %>%
   summarise(total = sum(n)) %>%
   mutate(proportion = total/sum(total),
          source = "iPhone")
-
+#Combine data sets, filter for wanted sentiments
 all_sentiments <- rbind(android_sentiments1, iPhone_sentiments1)
 all_sentiments <- all_sentiments %>%
   filter(sentiment %in% sentiments) %>%
