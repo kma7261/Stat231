@@ -72,7 +72,7 @@ load("/Users/kevinma/Downloads/trump_tweets_df.rda")
 ```{r}
 #Check if column 11 are all the same
 length(unique(trump_tweets_df[,11]))==1
-
+#select for wanted columns
 tweets <- trump_tweets_df %>%
   select("text", "created", "statusSource")
 glimpse(tweets)
@@ -84,12 +84,13 @@ glimpse(tweets)
 > ANSWER: There 5 different sources. There was 1 tweet from Instagram, 762 from Android, 1 from iPad, 628 from iPhone, and 120 from Web Client.
 
 ```{r}
+#Data wrangling, remove unwanted string characters
 sources <- tweets %>% 
   mutate(
     statusSource = gsub("</a>", "", statusSource),
     statusSource = gsub(".*>", "", statusSource)
   )
-
+#Get number of unique sources, create a table of those shources and how many tweets from each source
 unique(sources$statusSource)
 table(sources$statusSource)
 ```
@@ -115,7 +116,7 @@ tweets2 <- tweets %>%
 
 *Don't forget to remove stop words before creating the word cloud.  Also remove the terms "https" and "t.co".*
 
-> ANSWER: It appears that the word clouds are significantly different. Some common words that appear in both word clouds are "hillary", "foxnews", and "cnn". However, the most common words are different. For android, the most common words are "realdonaldtrump", "hillary", and "crooked". For iPhone, the most common words are "trump2016", "makeamericagreatagain", and "hillary".   
+> ANSWER: It appears that the word clouds are significantly different. Some common words that appear in both word clouds are "hillary", "foxnews", and "cnn". However, the most common words are different. For android, the most common words are "realdonaldtrump", "hillary", and "crooked". For iPhone, the most common words are "trump2016", "makeamericagreatagain", and "hillary". It appears more of the words from Android are about his political opponents, while his iPhone tweets relate more to his campaign events. Thus it seems the tone for these two text groups are somewhat different.  
 
 ```{r, fig.width=8, fig.height=8}
 #Modifying stopwords
@@ -126,12 +127,14 @@ stop_words <- rbind(stop_words, df)
 
 #Android wordcloud
 android <- tweets2 %>%
+  #Filter for android
   filter(source == "Android") %>%
   select(text) %>%
   unnest_tokens(output = word, input = text) %>%
+  #removing stopwords
   anti_join(stop_words, by="word") %>%
   count(word, sort = TRUE) 
-
+#generate wordcloud
 wordcloud(words = android$word
         , freq = android$n, max.words=50, , scale=c(5,1.6))
 
@@ -139,15 +142,17 @@ wordcloud(words = android$word
 
 ```{r, fig.width=8, fig.height=8}
 #iPhone WordCloud
-iphone <- tweets2 %>%
+iPhone <- tweets2 %>%
+  #filter for iPhone source
   filter(source == "iPhone") %>%
   select(text) %>%
   unnest_tokens(output = word, input = text) %>%
+  #remove stopwords
   anti_join(stop_words, by="word") %>%
   count(word, sort = TRUE) 
-
-wordcloud(words = iphone$word
-        , freq = iphone$n, max.words=50, , scale=c(5,1.6))
+#generate wordcloud
+wordcloud(words = iPhone$word
+        , freq = iPhone$n, max.words=50, , scale=c(5,1.6))
 
 ```
 
@@ -156,7 +161,7 @@ wordcloud(words = iphone$word
 
 How do the top used bigrams compare between the two sources?
 
-> ANSWER:  
+> ANSWER: While some phrases appear at the top of both lists, such as "crooked hillary" and "ted cruz", the words for Android refer more directly to people while for iPhone the most used words include more slogans and what appear to be campaign event hashtags.  
 
 ```{r}
 # Bigram code
@@ -179,19 +184,20 @@ android_ten <- bigrams_filtered %>%
   top_n(10)
 
 #Take top 10 for iPhone
-iPhone <- bigrams_filtered %>%
+iPhone1 <- bigrams_filtered %>%
   filter(source == "iPhone") %>%
   arrange(desc(n)) 
-iPhone_ten <- iPhone[1:10,]
+iPhone_ten <- iPhone1[1:10,]
 #combine
 trump_proc <- rbind(android_ten, iPhone_ten)
-
+#Visualization
 trump_proc %>% 
-  ggplot(aes(bigram, n, fill = source)) +
+  ggplot(aes(reorder(bigram, n), n, fill = source)) +
   geom_col(show.legend = FALSE) +
-  facet_wrap(~source, ncol = 2, , scales = "free_y") +
-  labs(y = "Number of Bigrams", x = NULL) +
-  ggtitle("Top 10 Bigrams in Android and iPhone Trump Tweets") +
+  #Second argument makes separate y-axis for the two graphs
+  facet_wrap(~source, scales = "free_y") +
+  labs(y = "# Bigrams", x = "Phrases") +
+  ggtitle("Top 10 Bigrams in Android and iPhone Tweets") +
   coord_flip()
 
 ```
@@ -200,16 +206,38 @@ trump_proc %>%
 \newpage
 2c. Consider the sentiment.  Compute the proportion of words among the tweets within each source classified as "angry" and the proportion of words classified as "joy"  based on the NRC lexicon.  How does the proportion of "angry" and "joy" words compare between the two sources?  What about "positive" and "negative" words?  
 
-> ANSWER: 
+> ANSWER: The proportion of words that are classified as angry is higher for Android than for iPhone, although the difference is not very much, around 1 percentage point. The proportion of words that are classified as "joy" is lower for Android than for iPhone with a difference of around 2 percentage points. Android is less positive and more negative compared to iPhone, about 3 percentage points more negative and 3 percentage points less positive.
 
 ```{r}
+#get the sentiments
+nrc1 <- get_sentiments("nrc")
+#vector of sentiments
+sentiments <- c("anger", "joy", "negative", "positive")
 
+android_sentiments1 <- nrc1 %>%
+  inner_join(android) %>%
+  group_by(sentiment) %>%
+  summarise(total = sum(n)) %>%
+  mutate(proportion = total/sum(total),
+         source = "Android")
 
+iPhone_sentiments1 <- nrc1 %>%
+  inner_join(iPhone) %>%
+  group_by(sentiment) %>%
+  summarise(total = sum(n)) %>%
+  mutate(proportion = total/sum(total),
+         source = "iPhone")
+
+all_sentiments <- rbind(android_sentiments1, iPhone_sentiments1)
+all_sentiments <- all_sentiments %>%
+  filter(sentiment %in% sentiments) %>%
+  select(-total)
+
+all_sentiments
 ```
-
 
 \newpage
 2d. Lastly, based on your responses above, do you think there is evidence to support Robinson's claim that Trump only writes the (angrier) Android half of the tweets from realDonaldTrump?  In 2-4 sentences, please explain.
 
-> ANSWER: 
+> ANSWER: While there is a difference between Android and iPhone tweets from Donald Trump, the difference in tone is very small. In addition, while there are differences in the most used words between Android and iPhone tweets, the two groups still share many words. As such, I don't think the assertation that Trump only writes the Android half of the tweets from realDonaldTrump is well-supported. I think it could be that his campaign only tweets from an iPhone as his slogans of "make america great again" and "trump 2016" only appear in the iPhone word cloud. Thus, I do not believe in Robinson's claim that Trump ONLY writes the Android half, but I do support the idea that a higher proportion of the Android tweets are from Trump compared to iPhone.
 
