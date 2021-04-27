@@ -30,7 +30,7 @@ library(tidytext)
 library(wordcloud)
 library(textdata)
 library(janitor)
-
+library(gapminder)
 knitr::opts_chunk$set(
   tidy=FALSE,     # display code as typed
   size="small")   # slightly smaller font for code
