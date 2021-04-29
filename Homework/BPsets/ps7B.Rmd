@@ -236,6 +236,13 @@ library(gapminder)
 
 world_map <- map_data(map = "world"
                       , region = ".")
+world_map$region[world_map$region == "USA"] <- "United States"
+world_map$region[world_map$region == "UK"] <- "United Kingdom"
+world_map$region[world_map$region == "Democratic Republic of the Congo"] <- "Congo, Dem. Rep."
+world_map$region[world_map$region == "Yemen"] <- "Yemen, Rep."
+world_map$region[world_map$region == "North Korea"] <- "Korea, Dem. Rep."
+world_map$region[world_map$region == "South Korea"] <- "Korea, Rep."
+world_map$region[world_map$region == "Slovakia"] <- "Slovak Republic"
 
 gapminder <- gapminder::gapminder
 
