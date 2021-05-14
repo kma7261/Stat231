@@ -43,7 +43,7 @@ knitr::opts_chunk$set(
 
 (b) Thinking about the discussion you had with the second group you were with during class on Tuesday 5/4 (focused on considering the use of algorithms in the college admissions process), did your perspective on, or understanding of, the use of algorithms in these contexts shift?  If not, was there anything you found surprising in the resources or your second group discussion?
 
-> ANSWER: 
+> ANSWER: One particular area of note in our discussion is the role of affirmative action and whether an algorithm designed the help one specific group may be tweaked or altered depending who is in charge of the government. While being race-blind would theoretically be the ideal in the admissions process, we discussed how no admissions process can be truly unbiased as many circumstances are tied to historical unjustices. It seems then that a more automated algorithm in the admissions process would actually amplify current biases as instead of perhaps one biased person affecting admissions for a group of students, the algorithm may exacerbate biases for all students if implemented. 
  
 
 
