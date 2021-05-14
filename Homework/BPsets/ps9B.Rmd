@@ -32,14 +32,14 @@ knitr::opts_chunk$set(
 \newpage 
 # If you discussed this assignment with any of your peers, please list who here:
 
-> ANSWER:
+> ANSWER: TA Hours with Andrea
 
 \newpage
 # 1. Ethics follow-up
 
 (a) Thinking about the discussion you had with the first group you were with during class on Tuesday 5/4 (focused on either "Predicting Policing & Recidivism" or "Predicting Financial Risk"), did your perspective on, or understanding of, any of the questions shift?  If so, please describe.  If not, was there anything you found surprising in the resources or your first group discussion?
 
-> ANSWER: 
+> ANSWER: I think that my perspective on how we could solve biases in predicting policing and recidivism changed. Before the conversation I had the viewpoint that biases would always exist no matter what so people should accept a degree of bias in these algorithms. However, my group provided some very good points on how bias can be mitigated and people should not accept tools that disproportionately hurt one group of people compared to the general population. 
 
 (b) Thinking about the discussion you had with the second group you were with during class on Tuesday 5/4 (focused on considering the use of algorithms in the college admissions process), did your perspective on, or understanding of, the use of algorithms in these contexts shift?  If not, was there anything you found surprising in the resources or your second group discussion?
 
@@ -58,7 +58,11 @@ Baseball players are voted into the Hall of Fame by the members of the Baseball 
 
 *Don't forget to standardize the variables before clustering, if applicable.*
 
-> ANSWER:  
+ANSWER: In this case I thought that unstandardized clustering would be more interpretable, although I also did do k-means clustering with standardized variables as well. Overall, I decided to go with 4 clusters do to the elbow plot.
+
+The first cluster is the green cluster, which players in the cluster appear to have the least number of hits and steals compared to the other clusters. The players in the green cluster also have a relatively low number of home runs and RBIs. The purple cluster as the second-least number of hits, between 2000 and 3500, the second most amount of home runs and RBIs, and the second least number of steals. The blue cluster has the second-most number of hits, the least amount of home runs, the second-least number of RBIs and the most number of steals (over 300 for all players). Lastly players in the red cluster have the highest number of hits, home runs, and RBIs while having the second-most in steals. 
+
+It seems that players in the red cluster are the “best”. Players in this group are the most well-rounded and lead in the more important categories (home runs and hits).
 
 ```{r, message = FALSE}
 library(tidyverse)
@@ -76,9 +80,64 @@ hof <- Batting %>%
   filter(inducted == "Y" & votedBy == "BBWAA") %>%
   summarize(tH = sum(H), tHR = sum(HR), tRBI = sum(RBI), tSB = sum(SB)) %>%
   filter(tH > 1000)
+##create standardized variables of tH, tHR, tRBI, and tSB
+hof_std <- hof %>%
+  mutate_if(is.numeric, funs(`std`=scale(.) %>% as.vector())) %>%
+  janitor::clean_names()
+
+##Vector of standardized variables
+vars_std <- c("t_h_std", "t_hr_std", "t_rbi_std", "t_sb_std")
+
+fig <- matrix(NA, nrow=10, ncol=2)
+for (i in 1:10){
+  fig[i,1] <- i
+  fig[i,2] <- kmeans(hof_std[,vars_std]
+                 , centers=i
+                 , nstart=20)$tot.withinss
+}
+
+ggplot(data=as.data.frame(fig), aes(x = V1, y = V2))+
+  geom_point()+
+  geom_line()+
+  scale_x_continuous(breaks=c(1:10))+
+  labs(x="K", y = expression("Total W"[k]))
+
 
 ```
+```{r}
+##K-means with standardization
+km4_out_std <- kmeans(hof_std[,vars_std]
+                      , centers = 4
+                      , nstart = 20)
+hof_std_more <- hof_std %>%
+  mutate(clust4_std = as.character(km4_out_std$cluster))
+```
 
+```{r}
+##Unstandardized variable K-means
+vars_unstd <- c("t_h", "t_hr", "t_rbi", "t_sb")
+km4_out_unstd <- kmeans(hof_std[,vars_unstd]
+                        , centers = 4
+                        , nstart = 20)
+
+hof_std_more <- hof_std_more %>%
+  mutate(clust4_unstd = as.character(km4_out_unstd$cluster))
+
+```
+```{r}
+#Unstandardized grid plot
+ggpairs(data = hof_std_more
+        , aes(color = clust4_unstd)
+        , columns = vars_unstd
+        , upper = list(continuous = "blank"))
+```
+```{r}
+#Standardized Grid Plot
+ggpairs(data = hof_std_more
+        , aes(color = clust4_std)
+        , columns = vars_unstd
+        , upper = list(continuous = "blank"))
+```
 
 \newpage
 
@@ -168,23 +227,17 @@ dbGetQuery(aircon, "SELECT *
                    LIMIT 0,5")
 ```
 
-```{sql connection=aircon}
 
-```
 
 4b. How many domestic flights flew into Dallas-Fort Worth (DFW) on May 14, 2010?  Use SQL to compute this number. (You can use R code to check it, if you wish.) 
 
 > ANSWER: 
 
-```{sql connection=aircon}
 
-```
 
 4c.  *Among the flights that flew into Dallas-Fort Worth (DFW) on May 14, 2010*, compute (using SQL) the number of flights and the average arrival delay time for each airline carrier.  Among these flights, how many carriers had an average arrival delay of 60 minutes or longer?
 
 > ANSWER: 
 
-```{sql connection=aircon}
 
-```
 
